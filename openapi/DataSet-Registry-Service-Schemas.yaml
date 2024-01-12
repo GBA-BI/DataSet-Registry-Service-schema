@@ -1,0 +1,622 @@
+openapi: 3.0.0
+info:
+  title: Bio-OS Datasets SPE
+  description: |
+    *Organize the data set in a unified format with a datasource-agnostic way.*
+  contact: {}
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/lizhebio/DataSets/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: "https://{defaultHost}/{basePath}/{apiVersion}"
+  variables:
+    defaultHost:
+      default: virtserver.swaggerhub.com
+    basePath:
+      default: lizhebio/DataSets
+    apiVersion:
+      default: v1
+tags:
+- name: DataSet
+  description: Create and submit a data set <SchemaDefinition schemaRef="#/components/schemas/DataSet"
+    />
+paths:
+  /DataSet:
+    get:
+      tags:
+      - DataSet
+      summary: ListDataSets
+      description: List all datasets.
+      operationId: ListDataSets
+      parameters:
+      - name: PageSize
+        in: query
+        description: "OPTIONAL The preferred number of datasets to return in a page.\
+          \ If not provided, the implementation should use a default page size. The\
+          \ implementation must not return more items than `page_size`, but it may\
+          \ return fewer.  Clients should not assume that if fewer than `page_size`\
+          \ items are returned that all items have been returned.  The availability\
+          \ of additional pages is indicated by the value of `next_page_token` in\
+          \ the response."
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: PageNumber
+        in: query
+        description: "OPTIONAL Token to use to indicate where to start getting results.\
+          \ If unspecified, return the first page of results."
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: Filter
+        in: query
+        description: OPTIONAL Filtering criteria.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+          properties:
+            IDs:
+              type: array
+              description: DataSets ID
+              items:
+                type: string
+            ProjectDataTypes:
+              type: array
+              description: Project Data Types
+              items:
+                type: string
+            Categories:
+              type: array
+              description: Categories
+              items:
+                type: string
+            Keyword:
+              type: string
+              description: Fuzzy matching for name/description/owner
+            Owner:
+              type: string
+              description: Fuzzy matching for data owner
+            Catalogues:
+              type: array
+              description: Dataset Catalogues
+              items:
+                type: string
+      - name: SortBy
+        in: query
+        description: OPTIONAL Sort by field，Name/CreateTimes.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: SortOrder
+        in: query
+        description: OPTIONAL Specify the sorting order
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSet'
+        "400":
+          description: "The request is malformed.' content: application/json: schema:\
+            \ $ref: "
+        "401":
+          description: "The request is unauthorized.' content: application/json: schema:\
+            \ $ref: "
+        "403":
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+    post:
+      tags:
+      - DataSet
+      summary: CreateDataSet
+      description: This endpoint creates a new data set and returns a `name` to monitor
+        its progress.
+      operationId: CreateDataSet
+      parameters:
+      - name: Name
+        in: query
+        description: 描述：名称 备注：对应yaml中的Name
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Description
+        in: query
+        description: '描述：描述 备注：对应yaml中的Description          '
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: CreateTime
+        in: query
+        description: '描述：建立时间（数据集本身，非在Bio-OS数据集中的创建时间） 备注：对应yaml中的CreateDate         '
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: UpdateTime
+        in: query
+        description: '描述：更新时间（数据集本身，非在Bio-OS数据集中的更新时间） 备注：对应yaml中的UpdateDate        '
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: Owners
+        in: query
+        description: '描述：用户 备注：对应yaml中的Owner       '
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: Category
+        in: query
+        description: "描述: 领域（从推荐列表中选择） 备注： 对应yaml中的Relevance     "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Labels
+        in: query
+        description: "描述: 标签（自定义，0-5个） 备注：      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: DocURL
+        in: query
+        description: "描述: 帮助文档链接 备注：对应yaml中的Documentation     "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Email
+        in: query
+        description: "描述: email 备注：  对应yaml中的Contact    "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Licence
+        in: query
+        description: "描述:  许可/使用条款 备注： 对应yaml中的License     "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ProjectType
+        in: query
+        description: "描述: 备注：     "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          properties:
+            ProjectDataTypes:
+              type: array
+              description: "描述: 项目数据类型列表 备注：对应yaml中的ProjectDataTypes "
+              items:
+                type: string
+            SampleScope:
+              type: array
+              description: "描述: 样本范围 备注：对应yaml中的SampleScope"
+              items:
+                type: string
+          items:
+            type: string
+      - name: ExternalLink
+        in: query
+        description: "描述: 外部链接 备注：对应yaml中的ExternalLink      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ExternalLinkDescription
+        in: query
+        description: "描述: 外部链接描述 备注： 对应yaml中的ExternalLinks_description     "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ExampleTutorial
+        in: query
+        description: "描述: 示例教程 备注：对应yaml中的Tutorial      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Tools
+        in: query
+        description: "描述: 工具/应用 备注： 对应yaml中的Tools&applications     "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Catalogue
+        in: query
+        description: "描述: 数据集编目 备注：对应yaml中的Catalogue      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: Publications
+        in: query
+        description: "描述: 出版物 备注：对应yaml中的Publications      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              allOf:
+                $ref: ./components/schemas/Publications
+      - name: DataFilesAccessURL
+        in: query
+        description: "描述: 数据文件信息 csv 路径 备注：对应yaml中的DataFilesURL      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: DataFileSamplesAccessURL
+        in: query
+        description: "描述: 数据样本信息 csv 路径 备注：对应yaml中的DataFileSamplesURL      "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: DataFileAccessMethodURL
+        in: query
+        description: "描述: 数据文件访问方法文件下载路径 备注：如果用的是其他账号权限下的桶，才需要这个字段 "
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
+                Description:
+                  type: string
+                CreateTime:
+                  type: string
+                UpdateTime:
+                  type: string
+                Owners:
+                  type: array
+                  items:
+                    type: string
+                Category:
+                  type: string
+                Labels:
+                  type: array
+                  items:
+                    type: string
+                DocURL:
+                  type: string
+                Email:
+                  type: string
+                Licence:
+                  type: string
+                ProjectType:
+                  type: array
+                  items:
+                    type: string
+                ExternalLink:
+                  type: string
+                ExternalLinkDescription:
+                  type: string
+                Tools:
+                  type: string
+                Publications:
+                  type: array
+                  items:
+                    type: string
+                Catalogue:
+                  type: string
+                DataFileSamplesAccessURL:
+                  type: string
+                DataFileAccessMethodURL:
+                  type: string
+            encoding: {}
+        required: false
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSet'
+        "400":
+          description: The request is malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "403":
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /DataSet/{ID}:
+    delete:
+      tags:
+      - DataSet
+      summary: Delete a DataSet
+      description: Deletes a DataSet by ID
+      operationId: deleteResource
+      parameters:
+      - name: ID
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSet'
+        "401":
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "403":
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: The requested DataSet wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+components:
+  schemas:
+    DataSet:
+      required:
+      - Catalogue
+      - Contact
+      - CreateData
+      - DataFilesURL
+      - Description
+      - Documentation
+      - ManagedBy
+      - Name
+      - Owner
+      - Relevance
+      - UpdateData
+      type: object
+      properties:
+        Name:
+          type: string
+          description: "#数据集名称 #规则：由中文、数字、字母、空格、连接符（-、_）、小括号、中括号、“.”、“：”、“，”、“/”、“\
+            +”、双引号组成；不能以空格、连接符（-、_）、“：”、“，”、双引号开头；请输入1～200个字符；全局范围内，数据集名称不可以重复"
+          example: GRCh37 Genome Reference Consortium Human Reference 37(hg19)
+        Description:
+          type: string
+          description: "#数据集描述 #规则：请输入1～1000个字符，可换行"
+          example: "'It contains the genome sequence files from the original release\
+            \ in 2009 by NCBI(GCA_000001405.1) and some related files. This original\
+            \ version and all subsequent changes are called \"hg19\" at UCSC.GRCh37\
+            \ was produced and is updated by the Genome Reference Consortium:  https://www.ncbi.nlm.nih.gov/grc'\
+            \       "
+        Documentation:
+          type: string
+          description: "#帮助文档链接 #规则：请提供帮助文档的链接地址（https，http形式）"
+        Contact:
+          type: string
+          description: "#联系人，主要是为了用户能获取到关于该数据集的帮助，一般属于数据集所有者团队 #规则：必须是email地址"
+          example: genome@soe.ucsc.edu
+        ManagedBy:
+          type: string
+          description: "#当前数据集管理者，即在当前平台上该数据的管理者，一般属于平台团队 #规则："
+          example: "bio2s[Bio-OS]"
+        Owner:
+          type: string
+          description: "#数据集所有者，一般指数据集所有者团队或个人，与平台无关 #规则：所有者可以是1～6个，由中文、数字、字母、空格、连\
+            接符（-、_）、“.”、小括号组成，请输入1～200个字符（所有所有者的总字符长度）；不能以空格、连接符（-、_）开头（指每个所有者的开头）\
+            ，当所有者有多个时，使用“，”分割"
+          example: 'UCSC Browser（the data is downloaded from UCSC Browser），NIC         '
+        License:
+          type: string
+          description: "#数据集所遵守的许可/使用条款等 #规则：提供文字或链接"
+        Relevance:
+          type: string
+          description: "#数据集所属领域 #规则：六选一，内容范围---组学基础研究，农业 ，医疗 ，工业，环境 ，进化（目前未限定在这6种\
+            ）"
+          example: 组学基础研究
+        Catalogue:
+          type: string
+          description: "#数据集所属编目，当数据集收集的数据类型不只是组学数据时，使用该字段进行分类，同时，目前mc-数据集中指展示该字段为\
+            “组学数据”的数据集 #规则：类目有限定，参看下方文档中的“编目内容”"
+          example: OMICSDATA_SRA
+        CreateData:
+          type: string
+          description: "#数据集的创建时间，注意不是在该平台上创建的时间，而是该数据集实际的建立时间 #规则：时间格式为，年-月-日，时间不\
+            能超过当前日期"
+          example: 2009-03-01
+        UpdateData:
+          type: string
+          description: "#数据集的更新时间，注意不是在该平台上创建的时间，而是该数据集实际的更新时间 #规则：时间格式为，年-月-日，时间不\
+            能超过当前日期，updatetime要大于等于createtime"
+          example: 2020-03-01
+        ProjectType:
+          $ref: '#/components/schemas/ProjectType'
+        Other:
+          $ref: '#/components/schemas/Other'
+        Publications:
+          $ref: '#/components/schemas/Publications'
+        Labels:
+          type: string
+          description: "#数据集的其他标签 #规则：由中文、数字、字母、空格、连接符（-、_）、“.”组成，不能以空格、连接符（-、_）开头\
+            ；最多可以添加6个；每个标签1-30个字符"
+          example: '- human - genome reference'
+        DataFilesURL:
+          type: string
+          description: '#数据文件元数据信息csv文件的地址（xxx_desc_file.csv），tos地址'
+        DataFileSamplesURL:
+          type: string
+          description: '#数据样本元数据信息csv文件的地址（xxx_desc_sample.csv），tos地址'
+      description: Bio-OS data set schema
+    ProjectType:
+      required:
+      - ProjectDataTypes
+      - SampleScope
+      type: object
+      properties:
+        ProjectDataTypes:
+          type: string
+          description: "#项目数据类型 #规则：目前提供17项，可以多选，链接见下方文档中的“Project data type”"
+          example: ""
+        SampleScope:
+          type: string
+          description: "#样本范围 #规则：在提供的选项中单选，见下方文档中的“Sample scope”"
+          example: ""
+      description: Bio-OS data set project
+    Other:
+      required:
+      - ExternalLink
+      - ExternalLinks_description
+      - Tools&applications
+      - Tutorial
+      type: object
+      properties:
+        ExternalLink:
+          type: string
+          description: "#外部链接，该数据集自己的门户网站 #规则：https等链接形式"
+          example: https://hgdownload.soe.ucsc.edu/downloads.html
+        ExternalLinks_description:
+          type: string
+          description: "#外部链接描述，对上述“外部链接”的说明 #规则：请输入1～1000个字符，不支持换行"
+          example: "This page contains links to sequence and annotation downloads\
+            \ for the genome assemblies featured in the UCSC Genome Browser.Downloads\
+            \ are also available via our JSON API, MySQL server, or FTP server. "
+        Tutorial:
+          type: string
+          description: "#示例教程，如该数据集的使用视频链接等 #规则：https等链接形式"
+        Tools&applications:
+          type: string
+          description: "#工具/应用，与该数据集相关的工具/应用链接或罗列 #规则：可填写链接地址或文字信息，如果是文字：由中文、数字、字母\
+            、空格、连接符（-、_）组成组成，1～1000个字符"
+      description: Bio-OS data set other
+    Publications:
+      required:
+      - Authors
+      - Citation
+      - Title
+      - URL
+      type: object
+      properties:
+        Title:
+          type: string
+          description: "#发表文章的题目 #规则：1～300个字符"
+        URL:
+          type: string
+          description: "#发表文章的在线链接 #规则：链接地址"
+          example: 'http://aaa.bbb.com    '
+        Authors:
+          type: string
+          description: "#发表文章的作者，可多个 #规则：每个作者1～100个字符，由中文、数字、字母、空格、连接符（-、_）、“.”、小括\
+            号组成，不能以空格、连接符（-、_）开头（指每个所有者的开头）"
+          example: '- author1 - author2'
+        Citation:
+          type: string
+          description: "#发表文章的引用信息 #规则：不设限"
+          example: http://111.222.com
+      description: Bio-OS data set other
+    ErrorResponse:
+      title: ErrorResponse
+      type: object
+      properties:
+        msg:
+          type: string
+          description: A detailed error message.
+        status_code:
+          type: integer
+          description: "The integer representing the HTTP status code (e.g. 200, 404)."
+          format: int32
+      description: An object that can optionally include information about the error.
