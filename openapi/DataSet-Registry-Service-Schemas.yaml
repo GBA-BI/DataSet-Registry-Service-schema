@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Bio-OS Datasets SPE
+  title: DataSets Registry Service Schema
   description: |
     *Organize the data set in a unified format with a datasource-agnostic way.*
   contact: {}
